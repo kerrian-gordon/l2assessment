@@ -22,8 +22,8 @@ function HistoryPage() {
     }
   }
 
-  const sortedHistory = [...history].sort((a, b) => 
-    a.message.localeCompare(b.message)
+  const sortedHistory = [...history].sort((a, b) =>
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   )
   
   const filteredHistory = filter === 'all' 
@@ -120,6 +120,11 @@ function HistoryPage() {
                       <span className="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">
                         {item.category}
                       </span>
+                      {item.routeTo && (
+                        <span className="text-xs bg-slate-800 text-white px-3 py-1 rounded-full font-semibold">
+                          {item.routeTo}
+                        </span>
+                      )}
                       <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         item.urgency === 'High' ? 'bg-red-200 text-red-900' :
                         item.urgency === 'Medium' ? 'bg-yellow-200 text-yellow-900' :
