@@ -9,8 +9,9 @@ import { buildMessages, parseLlmResponse, buildTriage, describeAiFailure } from 
  * the message is still triaged by deterministic rules, and the result says so.
  */
 
-// Override with VITE_GROQ_MODEL in .env.local if this model is retired.
-const MODEL = import.meta.env.VITE_GROQ_MODEL || 'llama-3.3-70b-versatile'
+// Groq retires models over time (the original llama-3.3-70b-versatile is gone).
+// Override with VITE_GROQ_MODEL in .env.local if this one is retired too.
+const MODEL = import.meta.env.VITE_GROQ_MODEL || 'openai/gpt-oss-120b'
 
 let client = null
 function getClient() {
@@ -49,7 +50,7 @@ export async function analyzeMessage(message) {
       messages: buildMessages(message),
       temperature: 0, // same message -> same triage
       response_format: { type: 'json_object' },
-      max_tokens: 400,
+      max_tokens: 2000, // leaves room for models that reason before answering
     })
     const parsed = parseLlmResponse(response.choices?.[0]?.message?.content)
     if (!parsed) {

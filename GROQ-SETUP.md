@@ -5,7 +5,6 @@
 ✅ **Completely Free** - No credit card required  
 ✅ **Fast** - Groq's LPU technology provides incredibly fast inference  
 ✅ **Generous Limits** - ~14,400 requests/day on free tier  
-✅ **High Quality** - Llama 3.3 70B model performs excellently  
 
 ## Step-by-Step Setup
 
@@ -96,6 +95,17 @@ If you don't want to use an API key, the app automatically falls back to **rule-
 Rule-based results are deterministic, work offline, and are flagged under "Before you act" in the UI
 so they are not mistaken for AI output.
 
+### "The AI rejected the request (error 404)"
+
+**Problem**: Groq has retired the model the app is set to use
+
+**Solution**: open https://console.groq.com/docs/models, pick a current general chat model, and add it
+to `.env.local`, then restart the dev server:
+
+```
+VITE_GROQ_MODEL=the-model-name
+```
+
 ## Free Tier Limits
 
 Groq's free tier includes:
@@ -103,7 +113,7 @@ Groq's free tier includes:
 - **~14,400 requests per day**
 - **30 requests per minute**
 - Access to multiple models including:
-  - Llama 3.3 70B (what this app uses)
+  - `openai/gpt-oss-120b` (what this app uses by default)
   - Llama 3.1 8B
   - Mixtral 8x7B
   - Gemma 2 9B

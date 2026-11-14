@@ -11,7 +11,7 @@ Support teams waste time manually reading and triaging customer messages. This t
 ## Tech Stack
 
 - **Frontend**: React + Vite + Tailwind CSS
-- **AI**: Groq API (Llama 3.3 70B - Free tier)
+- **AI**: Groq API, free tier (model `openai/gpt-oss-120b` by default; set `VITE_GROQ_MODEL` to change it)
 - **Runtime**: Browser-based (local development only)
 
 ## Setup Instructions
@@ -140,7 +140,6 @@ The dashboard won't load when I try to access it. I've tried refreshing but it k
 - ✅ **Completely Free** - No credit card required
 - ✅ **Fast Inference** - Groq's LPU technology is incredibly fast
 - ✅ **Generous Limits** - ~14,400 requests/day on free tier
-- ✅ **High Quality** - Llama 3.3 70B performs excellently
 - ✅ **Easy Signup** - Get started in minutes at https://console.groq.com
 
 ## License
