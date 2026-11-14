@@ -1,5 +1,5 @@
 import Groq from 'groq-sdk'
-import { buildMessages, parseLlmResponse, buildTriage } from './triage.js'
+import { buildMessages, parseLlmResponse, buildTriage, describeAiFailure } from './triage.js'
 
 /**
  * LLM Helper - asks Groq for a structured triage of a customer message and
@@ -9,11 +9,13 @@ import { buildMessages, parseLlmResponse, buildTriage } from './triage.js'
  * the message is still triaged by deterministic rules, and the result says so.
  */
 
-const MODEL = 'llama-3.3-70b-versatile'
+// Override with VITE_GROQ_MODEL in .env.local if this model is retired.
+const MODEL = import.meta.env.VITE_GROQ_MODEL || 'llama-3.3-70b-versatile'
 
 let client = null
 function getClient() {
-  const apiKey = import.meta.env.VITE_GROQ_API_KEY
+  // Stray spaces or quotes around a pasted key would break the request.
+  const apiKey = (import.meta.env.VITE_GROQ_API_KEY || '').trim().replace(/^["'\u201C\u2018]+|["'\u201D\u2019]+$/g, '')
   if (!apiKey || apiKey === 'your_groq_api_key_here') return null
   if (!client) {
     client = new Groq({
@@ -55,12 +57,8 @@ export async function analyzeMessage(message) {
     }
     return buildTriage(message, parsed)
   } catch (error) {
-    console.warn('Groq API failed, using rule-based triage:', error.message)
-    const reason = error?.status === 429
-      ? 'The AI is busy right now (rate limit reached).'
-      : error?.status === 401
-        ? 'The AI rejected the API key.'
-        : 'The AI could not be reached.'
+    console.warn('Groq API failed, using rule-based triage:', error?.status ?? '', error?.message)
+    const reason = describeAiFailure(error)
     return buildTriage(message, null, reason)
   }
 }

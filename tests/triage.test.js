@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { scoreUrgency } from '../src/utils/urgencyScorer.js'
-import { buildTriage, parseLlmResponse, buildMessages, validateMessage, MAX_MESSAGE_LENGTH } from '../src/utils/triage.js'
+import { buildTriage, parseLlmResponse, buildMessages, validateMessage, describeAiFailure, MAX_MESSAGE_LENGTH } from '../src/utils/triage.js'
 import { getRouting } from '../src/utils/templates.js'
 
 const llm = (overrides = {}) => ({
@@ -198,4 +198,16 @@ test('each result carries at most one caution in rule-based mode', () => {
   for (const m of ['hi', 'Server down now', 'What are your business hours?', 'asdf qwer zxcv uiop']) {
     assert.ok(buildTriage(m, null, 'AI is not set up (no API key).').reviewReasons.length <= 1, m)
   }
+})
+
+test('AI failures are described by their actual cause', () => {
+  assert.match(describeAiFailure({ status: 401 }), /rejected the API key/)
+  assert.match(describeAiFailure({ status: 403 }), /refused access/)
+  assert.match(describeAiFailure({ status: 429 }), /rate limit/)
+  assert.match(describeAiFailure({ status: 404 }), /error 404.*model may no longer be available/)
+  assert.match(describeAiFailure({ status: 400 }), /error 400/)
+  assert.match(describeAiFailure({ status: 503 }), /having problems \(error 503\)/)
+  assert.match(describeAiFailure({ name: 'APIConnectionTimeoutError' }), /too long/)
+  assert.match(describeAiFailure({ message: 'Connection error.' }), /could not be reached/)
+  assert.match(describeAiFailure(undefined), /could not be reached/)
 })

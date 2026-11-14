@@ -37,6 +37,24 @@ export function validateMessage(raw) {
   return { ok: true, text, error: '', notice: '' }
 }
 
+/**
+ * Turn a failed AI call into a plain reason the user can act on.
+ *
+ * @param {{status?: number, name?: string, message?: string}} error
+ */
+export function describeAiFailure(error) {
+  const status = error?.status
+  if (status === 401) return 'The AI rejected the API key.'
+  if (status === 403) return 'The AI refused access for this API key.'
+  if (status === 429) return 'The AI is busy right now (rate limit reached).'
+  if (status === 400 || status === 404) return `The AI rejected the request (error ${status}) - the model may no longer be available.`
+  if (status >= 500) return `The AI service is having problems (error ${status}).`
+  if (error?.name === 'APIConnectionTimeoutError' || /timed? ?out/i.test(error?.message || '')) {
+    return 'The AI took too long to respond.'
+  }
+  return 'The AI could not be reached (network problem or blocked connection).'
+}
+
 /** True when most of the letters are outside the basic Latin alphabet. */
 function isMostlyNonEnglish(text) {
   const letters = text.match(/\p{L}/gu) || []
