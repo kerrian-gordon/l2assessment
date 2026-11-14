@@ -62,13 +62,32 @@ Support teams waste time manually reading and triaging customer messages. This t
 
 1. **Paste Message**: User pastes a customer support message into the text area
 2. **Analyze**: Click "Analyze Message" to process the input
-3. **Classification**: The app runs three processes in parallel:
-   - **Category Classification** (LLM): Uses Groq AI (Llama 3.3 70B) to categorize the message
-   - **Urgency Scoring** (Rule-based): Applies simple rules to determine urgency
-   - **Recommendation** (Template-based): Maps category to a recommended action
-4. **Display Results**: Shows category, urgency tag, recommended action, and AI reasoning
-5. **History**: All analyses are saved to localStorage and viewable in the History tab
+3. **Triage**: The app produces one triage decision from two sources:
+   - **AI classification** (`src/utils/llmHelper.js`, `src/utils/triage.js`): a single structured Groq call
+     (JSON output, temperature 0) returns category, optional secondary category, urgency, confidence,
+     a one-line summary and reasoning. The reply is validated against a fixed schema.
+   - **Safety rules** (`src/utils/urgencyScorer.js`): deterministic signals for outages, security incidents,
+     data loss, blocked customers, incorrect charges, time pressure and churn risk. Rules can *raise* the
+     AI's urgency (an outage is never triaged below High) but never lower it.
+4. **Routing** (`src/utils/templates.js`): category + urgency map to an owning team and a concrete
+   recommended action; High urgency and churn-risk messages are flagged for escalation.
+5. **Human check**: low AI confidence, a rules/AI disagreement, or a message too short to triage is
+   flagged "Needs a human check" with the reason.
+6. **History**: analyses are saved to localStorage and listed most-urgent-first in the History tab
 
+### When the AI is unavailable
+
+With no API key, a rejected key, a rate limit, a network error or an unusable AI reply, the app still
+triages the message using the rules alone. The result is clearly labelled **"AI unavailable - rule-based
+triage"** with the reason, so it is never mistaken for an AI answer.
+
+### Tests
+
+```bash
+npm test
+```
+
+Runs the triage test suite (`tests/triage.test.js`) with Node's built-in test runner - no API key needed.
 
 ## Example Test Messages
 

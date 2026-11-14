@@ -73,7 +73,7 @@ npm run dev
 **Solutions**:
 - Wait a few minutes and try again
 - Create a new Groq account with a different email
-- Use the built-in mock responses (automatic fallback)
+- Keep working: the app falls back to rule-based triage automatically
 
 ### Key Not Working
 
@@ -85,14 +85,16 @@ npm run dev
 - Update `.env.local` with the new key
 - Restart dev server
 
-## Mock Mode (No API Key Needed)
+## Rule-Based Mode (No API Key Needed)
 
-If you don't want to use an API key, the app automatically falls back to **mock responses** when:
+If you don't want to use an API key, the app automatically falls back to **rule-based triage** when:
 - No API key is configured
 - API key is invalid
 - Rate limit is exceeded
+- The AI's reply cannot be validated
 
-The mock mode uses realistic keyword-based categorization and works offline!
+Rule-based results are deterministic, work offline, and are labelled "AI unavailable - rule-based triage"
+in the UI so they are not mistaken for AI output.
 
 ## Free Tier Limits
 

@@ -22,8 +22,11 @@ function HistoryPage() {
     }
   }
 
-  const sortedHistory = [...history].sort((a, b) => 
-    a.message.localeCompare(b.message)
+  // Most urgent first, then newest first, so the list works as a queue.
+  const urgencyRank = { High: 0, Medium: 1, Low: 2 }
+  const sortedHistory = [...history].sort((a, b) =>
+    (urgencyRank[a.urgency] ?? 3) - (urgencyRank[b.urgency] ?? 3) ||
+    new Date(b.timestamp) - new Date(a.timestamp)
   )
   
   const filteredHistory = filter === 'all' 
@@ -127,6 +130,21 @@ function HistoryPage() {
                       }`}>
                         {item.urgency} Urgency
                       </span>
+                      {item.team && (
+                        <span className="text-xs bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-semibold">
+                          → {item.team}
+                        </span>
+                      )}
+                      {item.escalate && (
+                        <span className="text-xs bg-red-600 text-white px-3 py-1 rounded-full font-semibold">
+                          Escalate
+                        </span>
+                      )}
+                      {item.source === 'rules' && (
+                        <span className="text-xs bg-amber-100 text-amber-900 px-3 py-1 rounded-full font-semibold">
+                          Rule-based
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="text-gray-400 ml-4">
@@ -151,7 +169,7 @@ function HistoryPage() {
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs font-semibold text-gray-600 mb-1">AI Reasoning</div>
+                      <div className="text-xs font-semibold text-gray-600 mb-1">{item.source === 'rules' ? 'Why (rule-based)' : 'AI Reasoning'}</div>
                       <div className="bg-white p-3 rounded border border-gray-200">
                         <div className="prose prose-sm max-w-none text-gray-700">
                           <ReactMarkdown>
