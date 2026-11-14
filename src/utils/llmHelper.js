@@ -19,7 +19,7 @@ function getClient() {
     client = new Groq({
       apiKey,
       dangerouslyAllowBrowser: true, // Local development only - never ship a key to the browser.
-      timeout: 15000,
+      timeout: 10000,
       maxRetries: 1,
     })
   }
@@ -35,7 +35,10 @@ function getClient() {
 export async function analyzeMessage(message) {
   const groq = getClient()
   if (!groq) {
-    return buildTriage(message, null, 'No Groq API key is configured.')
+    return buildTriage(message, null, 'AI is not set up (no API key).')
+  }
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    return buildTriage(message, null, 'You appear to be offline, so the AI could not be reached.')
   }
 
   try {
@@ -48,16 +51,16 @@ export async function analyzeMessage(message) {
     })
     const parsed = parseLlmResponse(response.choices?.[0]?.message?.content)
     if (!parsed) {
-      return buildTriage(message, null, 'The AI returned an answer that could not be validated.')
+      return buildTriage(message, null, 'The AI gave an answer that could not be used.')
     }
     return buildTriage(message, parsed)
   } catch (error) {
     console.warn('Groq API failed, using rule-based triage:', error.message)
     const reason = error?.status === 429
-      ? 'The AI rate limit was reached.'
+      ? 'The AI is busy right now (rate limit reached).'
       : error?.status === 401
-        ? 'The Groq API key was rejected.'
-        : 'The AI service could not be reached.'
+        ? 'The AI rejected the API key.'
+        : 'The AI could not be reached.'
     return buildTriage(message, null, reason)
   }
 }

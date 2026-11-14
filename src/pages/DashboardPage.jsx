@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { loadHistory } from '../utils/historyStore'
 
 function DashboardPage() {
   const [stats, setStats] = useState({
@@ -15,7 +16,7 @@ function DashboardPage() {
   }, [])
 
   const loadDashboardData = () => {
-    const history = JSON.parse(localStorage.getItem('triageHistory') || '[]')
+    const history = loadHistory()
     const today = new Date().toDateString()
     const todayMessages = history.filter(item => 
       new Date(item.timestamp).toDateString() === today
@@ -23,7 +24,10 @@ function DashboardPage() {
 
     // Calculate stats
     const highUrgency = history.filter(h => h.urgency === 'High').length
-    const totalDays = history.length > 0 ? 7 : 1
+    // Average over the days actually covered, from the first analysis to today.
+    const firstDay = Math.min(...history.map(h => new Date(h.timestamp).setHours(0, 0, 0, 0)).filter(Number.isFinite))
+    const today0 = new Date().setHours(0, 0, 0, 0)
+    const totalDays = Number.isFinite(firstDay) ? Math.max(1, Math.round((today0 - firstDay) / 86400000) + 1) : 1
     
     setStats({
       total: history.length,

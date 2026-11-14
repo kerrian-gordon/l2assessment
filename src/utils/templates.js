@@ -23,7 +23,7 @@ const routes = {
     actions: {
       High: 'Escalate to the on-call engineer now and check whether other customers are affected. Acknowledge the customer straight away and keep them updated until resolved.',
       Medium: 'Reply with troubleshooting steps and ask for reproduction details (what they did, browser/device, screenshot). Open a bug ticket if it can be reproduced.',
-      Low: 'Send the relevant help-centre article and log the report for tracking.',
+      Low: 'Send the relevant help center article and log the report for tracking.',
     },
   },
   'Billing Issue': {
@@ -63,15 +63,15 @@ const routes = {
     team: 'Support',
     actions: {
       High: 'Answer directly as a priority; the customer has indicated this is time-sensitive.',
-      Medium: 'Answer the question directly and link to the relevant help-centre article.',
-      Low: 'Answer the question, using the FAQ / help-centre article where one exists.',
+      Medium: 'Answer the question directly and link to the relevant help center article.',
+      Low: 'Answer the question, using the FAQ / help center article where one exists.',
     },
   },
   [UNKNOWN_CATEGORY]: {
     team: 'Support',
     actions: {
-      High: 'Review manually now: the message could not be categorised but shows urgent signals.',
-      Medium: 'Review manually: the message could not be categorised confidently.',
+      High: 'Review manually now: the message could not be categorized but shows urgent signals.',
+      Medium: 'Review manually: the message could not be categorized confidently.',
       Low: 'Reply asking the customer for more detail about what they need.',
     },
   },

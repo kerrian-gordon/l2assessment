@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { loadHistory as readHistory, clearHistory as wipeHistory } from '../utils/historyStore'
 
 function HistoryPage() {
   const [history, setHistory] = useState([])
@@ -11,13 +12,12 @@ function HistoryPage() {
   }, [])
 
   const loadHistory = () => {
-    const savedHistory = JSON.parse(localStorage.getItem('triageHistory') || '[]')
-    setHistory(savedHistory)
+    setHistory(readHistory())
   }
 
   const clearHistory = () => {
     if (window.confirm('Are you sure you want to clear all history?')) {
-      localStorage.setItem('triageHistory', '[]')
+      wipeHistory()
       setHistory([])
     }
   }

@@ -71,15 +71,23 @@ Support teams waste time manually reading and triaging customer messages. This t
      AI's urgency (an outage is never triaged below High) but never lower it.
 4. **Routing** (`src/utils/templates.js`): category + urgency map to an owning team and a concrete
    recommended action; High urgency and churn-risk messages are flagged for escalation.
-5. **Human check**: low AI confidence, a rules/AI disagreement, or a message too short to triage is
-   flagged "Needs a human check" with the reason.
+5. **Result**: one verdict ("High urgency - Send to Engineering On-Call now"), one action, and at most
+   one "Before you act" caution (AI unsure, AI unavailable, rules overrode the AI, or not enough detail).
+   The reasoning is one click away under "Why this result?".
 6. **History**: analyses are saved to localStorage and listed most-urgent-first in the History tab
 
 ### When the AI is unavailable
 
 With no API key, a rejected key, a rate limit, a network error or an unusable AI reply, the app still
-triages the message using the rules alone. The result is clearly labelled **"AI unavailable - rule-based
-triage"** with the reason, so it is never mistaken for an AI answer.
+triages the message using the rules alone. The result says so in plain words under "Before you act",
+with the reason, so it is never mistaken for an AI answer. The rules only understand English.
+
+### Input handling
+
+- Empty input, or input with no words (e.g. `???`), is rejected with an inline message; nothing is saved.
+- Messages over 5,000 characters are analyzed on their first 5,000 characters, and the result says so.
+- Very short messages ("hi") get a "ask the customer what they need" result instead of a guess.
+- Corrupt, full or blocked browser storage never breaks a page; if a result can't be saved, the user is told.
 
 ### Tests
 

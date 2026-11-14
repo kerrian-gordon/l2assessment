@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { loadHistory } from '../utils/historyStore'
 
 function HomePage() {
   const [stats, setStats] = useState({ total: 0, today: 0 })
@@ -7,7 +8,7 @@ function HomePage() {
 
   useEffect(() => {
     // Load stats from localStorage
-    const history = JSON.parse(localStorage.getItem('triageHistory') || '[]')
+    const history = loadHistory()
     const today = new Date().toDateString()
     const todayCount = history.filter(item => 
       new Date(item.timestamp).toDateString() === today

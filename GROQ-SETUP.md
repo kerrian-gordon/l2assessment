@@ -93,8 +93,8 @@ If you don't want to use an API key, the app automatically falls back to **rule-
 - Rate limit is exceeded
 - The AI's reply cannot be validated
 
-Rule-based results are deterministic, work offline, and are labelled "AI unavailable - rule-based triage"
-in the UI so they are not mistaken for AI output.
+Rule-based results are deterministic, work offline, and are flagged under "Before you act" in the UI
+so they are not mistaken for AI output.
 
 ## Free Tier Limits
 

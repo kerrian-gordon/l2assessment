@@ -30,7 +30,7 @@ const SIGNALS = [
     label: 'Service outage',
     weight: 60,
     critical: true,
-    pattern: /\b((server|site|website|service|system|app|api|database|db|platform|production|prod|everything)s?\b[^.!?]{0,40}?\b(down|offline|unavailable|unreachable|not responding|crash(ed|ing|es)?)|outage|connection (lost|refused|failed|dropped)|(is|are|went|goes) down)\b/gi,
+    pattern: /\b((server|site|website|service|system|app|api|database|db|platform|production|prod|everything|checkout|page|portal|store|shop|login|payment)s?\b[^.!?]{0,40}?\b(down|offline|unavailable|unreachable|not responding|crash(ed|ing|es)?)|outage|connection (lost|refused|failed|dropped)|(is|are|went|goes|been|still) down)\b/gi,
   },
   {
     id: 'data-loss',
@@ -43,7 +43,7 @@ const SIGNALS = [
     id: 'blocked',
     label: 'Customer is blocked / something is broken',
     weight: 35,
-    pattern: /\b((can'?t|cannot|can not|unable to|couldn'?t|won'?t let me) (log ?in|sign ?in|access|open|load|check ?out|use|send|connect|pay|upload|save|see)|locked out|nothing (works|is working|loads|is loading)|(won'?t|doesn'?t|not|isn'?t|stopped) (load|loading|work|working|open|opening|respond|responding)|keeps? (loading|crashing|timing out|failing|freezing)|tim(es|ed|ing) out|errors?|broken|bugs?|crash(es|ed|ing)?|fail(s|ed|ing|ure)?)\b/gi,
+    pattern: /\b((can'?t|cannot|can not|unable to|couldn'?t|won'?t let (me|us|them)) (?!(wait|thank|believe|imagine|complain|recommend|say|tell|decide|remember|find the words)\b)\w+|locked out|nothing (works|is working|loads|is loading)|(won'?t|doesn'?t|not|isn'?t|stopped) (load|loading|work|working|open|opening|respond|responding)|keeps? (loading|crashing|timing out|failing|freezing)|tim(es|ed|ing) out|errors?|broken|bugs?|crash(es|ed|ing)?|fail(s|ed|ing|ure)?)\b/gi,
   },
   {
     id: 'money',
